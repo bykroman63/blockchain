@@ -1,0 +1,41 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  tgId          String   @unique
+  userName      String?
+  privateKey    String?
+  mnemonic      String
+  autoBuy       Boolean
+  autoSell      Boolean
+  slippage      String
+  buyAmount     String
+  sellAmount    String
+  tokens        String[]
+  referrer      Int
+  referralCount Int
+  points        Int
+  TradeVolume   Int
+}
+
+model Trades {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  tokenAddress  String
+  amount        String
+  priceBoughtAt String
+  Orders        Orders? @relation(fields: [ordersId], references: [id])
+  ordersId      String? @db.ObjectId
+}
+
+model Orders {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  tgId     String   @unique
+  myTrades Trades[]
+}
